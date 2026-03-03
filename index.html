@@ -413,8 +413,8 @@
             <!-- شريط التحكم -->
             <div class="controls-bar">
                 <div class="search-box">
-                    <!-- تم إضافة data-i18n-placeholder للـ input -->
-                    <input type="text" data-i18n-placeholder="search_placeholder" placeholder="">
+                    <!-- أضفت id="searchInput" للوصول إلى الحقل برمجياً -->
+                    <input type="text" id="searchInput" data-i18n-placeholder="search_placeholder" placeholder="">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </div>
             </div>
@@ -800,7 +800,7 @@
         function applyTranslations(translations, lang) {
             // 1. تحديث اتجاه ولغة الصفحة
             document.documentElement.lang = lang;
-            const isRtl = ['ar', 'ur'].includes(lang); // إضافة الأردو (ur) للغات التي تُكتب من اليمين لليسار
+            const isRtl = ['ar', 'ur'].includes(lang);
             document.documentElement.dir = isRtl ? 'rtl' : 'ltr';
 
             // 2. تحديث مكتبة Bootstrap بناءً على الاتجاه
@@ -838,13 +838,47 @@
                     el.alt = translations[key];
                 }
             });
+
+            // إعادة تشغيل فلترة البحث في حال تم تغيير لغة الموقع أثناء وجود نص في حقل البحث
+            filterLanguages();
         }
 
         // كود تشغيل الترجمة عند تحميل الصفحة (تحديد الإنجليزية كافتراضي)
         document.addEventListener('DOMContentLoaded', () => {
             loadTranslations(currentLang);
             updateDropdownUI(currentLang);
+
+            // إضافة مستمع الأحداث (Event Listener) لحقل البحث
+            const searchInput = document.getElementById('searchInput');
+            if(searchInput) {
+                searchInput.addEventListener('input', filterLanguages);
+            }
         });
+
+        // ==========================================
+        // ميزة البحث في اللغات
+        // ==========================================
+        function filterLanguages() {
+            const searchInput = document.getElementById('searchInput');
+            if(!searchInput) return;
+            
+            // جلب النص المُدخل وتحويله لأحرف صغيرة لتسهيل المطابقة (Case-insensitive)
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            const langItems = document.querySelectorAll('.lang-item');
+
+            langItems.forEach(item => {
+                // جلب اسم اللغة ورمزها من داخل البطاقة
+                const langName = item.querySelector('.lang-name').textContent.toLowerCase();
+                const langCode = item.querySelector('.lang-code').textContent.toLowerCase();
+
+                // التحقق مما إذا كان اسم اللغة أو الرمز يحتوي على النص المدخل
+                if (langName.includes(searchTerm) || langCode.includes(searchTerm)) {
+                    item.style.display = 'flex'; // إظهار البطاقة
+                } else {
+                    item.style.display = 'none'; // إخفاء البطاقة
+                }
+            });
+        }
 
         // دوال القائمة المنسدلة للغات
         function toggleDropdown() {
