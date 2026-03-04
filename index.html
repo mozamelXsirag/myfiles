@@ -856,22 +856,38 @@
         });
 
         // ==========================================
-        // ميزة البحث في اللغات
+        // ميزة البحث في اللغات (محدثة لدعم العربية بذكاء)
         // ==========================================
+        
+        // دالة لتوحيد النصوص (تجاهل "ال" التعريف والهمزات والتاء المربوطة)
+        function normalizeSearchText(text) {
+            if (!text) return "";
+            return text.toLowerCase()
+                .replace(/[أإآ]/g, 'ا')       // توحيد الألف
+                .replace(/ة/g, 'ه')           // توحيد التاء المربوطة والهاء
+                .replace(/ى/g, 'ي')           // توحيد الألف المقصورة والياء
+                .replace(/(^|\s)ال/g, '$1');  // إزالة "ال" التعريف سواء في أول الكلمة أو بعد مسافة
+        }
+
         function filterLanguages() {
             const searchInput = document.getElementById('searchInput');
             if(!searchInput) return;
             
-            // جلب النص المُدخل وتحويله لأحرف صغيرة لتسهيل المطابقة (Case-insensitive)
-            const searchTerm = searchInput.value.toLowerCase().trim();
+            // جلب النص المُدخل وتمريره لدالة التوحيد
+            const rawSearchTerm = searchInput.value.trim();
+            const searchTerm = normalizeSearchText(rawSearchTerm);
             const langItems = document.querySelectorAll('.lang-item');
 
             langItems.forEach(item => {
                 // جلب اسم اللغة ورمزها من داخل البطاقة
-                const langName = item.querySelector('.lang-name').textContent.toLowerCase();
-                const langCode = item.querySelector('.lang-code').textContent.toLowerCase();
+                const langNameText = item.querySelector('.lang-name').textContent;
+                const langCodeText = item.querySelector('.lang-code').textContent;
 
-                // التحقق مما إذا كان اسم اللغة أو الرمز يحتوي على النص المدخل
+                // تمرير نصوص البطاقات لدالة التوحيد أيضاً
+                const langName = normalizeSearchText(langNameText);
+                const langCode = normalizeSearchText(langCodeText);
+
+                // التحقق مما إذا كان اسم اللغة أو الرمز يحتوي على النص المدخل (تعمل في أي مقطع من الكلمة)
                 if (langName.includes(searchTerm) || langCode.includes(searchTerm)) {
                     item.style.display = 'flex'; // إظهار البطاقة
                 } else {
