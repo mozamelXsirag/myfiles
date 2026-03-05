@@ -83,27 +83,6 @@
             width: auto;
         }
 
-        .nav-links {
-            display: flex;
-            gap: 25px;
-            /* الهوامش تتغير حسب الاتجاه عبر CSS منطقي */
-            margin-inline-end: 40px; 
-        }
-
-        .nav-links a {
-            font-size: 0.95rem;
-            color: var(--text-gray);
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: color 0.3s;
-        }
-
-        .nav-links a:hover, .nav-links a.active {
-            color: var(--primary-color);
-        }
-
         .lang-switch {
             font-size: 0.9rem;
             font-weight: 600;
@@ -314,17 +293,6 @@
         }
 
         /* ------------------ التصميم المتجاوب (Responsive) ------------------ */
-        @media (max-width: 900px) {
-            .nav-links { display: none; }
-            .header-right .fa-bars {
-                display: block !important;
-                margin-inline-start: 15px;
-                color: var(--primary-color);
-                font-size: 1.2rem;
-                cursor: pointer;
-            }
-        }
-
         @media (max-width: 768px) {
             .content-container {
                 padding: 20px;
@@ -349,8 +317,6 @@
             }
         }
 
-        .mobile-menu-icon { display: none; }
-
         /* ------------------ التذييل (Footer) ------------------ */
         footer {
             text-align: center;
@@ -369,15 +335,10 @@
     <header>
         <div class="container header-inner">
             <div class="header-right">
-                <i class="fa-solid fa-bars mobile-menu-icon"></i>
                 <div class="logo">
                     <!-- تم إضافة data-i18n-alt للنص البديل -->
                     <img src="https://raw.githubusercontent.com/mozamelXsirag/myfiles/main/logo.svg" data-i18n-alt="site_title" alt="">
                 </div>
-                <nav class="nav-links">
-                    <a href="#" class="active" data-i18n="nav_home"></a>
-                    <a href="#" data-i18n="nav_dev"></a>
-                </nav>
             </div>
             <div class="header-left">
                 <!-- القائمة المنسدلة للغات -->
